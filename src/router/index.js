@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import CountryDetails from '../views/CountryDetails.vue'
 
 const routes = [
   {
@@ -8,13 +9,14 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
+    path: '/:country',
+    name: 'country-detail',
+    component: CountryDetails,
+    props: true,
+    meta: {
+      title: 'REST API Countries App'
+    }
+  },
 ]
 
 const router = createRouter({
