@@ -9,13 +9,10 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/:country',
+    path: '/country/:name',
     name: 'country-detail',
     component: CountryDetails,
-    props: true,
-    meta: {
-      title: 'REST API Countries App'
-    }
+    props:true
   },
 ]
 

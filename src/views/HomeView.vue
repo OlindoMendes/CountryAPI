@@ -10,28 +10,36 @@
           aria-label="Search for a country..."
           placeholder="Search for a country..."
         />
-       
       </div>
     </div>
-    <!-- API response data -->
-    <div class="tileGrid">
-      <div
-        class="countryTile"
-        v-for="country in searchedCountry"
-        :key="country.id"
+    <div class="select">
+      <select name="region" id="region-id" v-model="selectedRegion">
+        <option value="">Filter by Region</option>
+        <option :value="region" v-for="region in regions" :key="region">
+          {{ region }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tileGrid">
+    <div
+      class="countryTile"
+      v-for="country in searchedCountry"
+      :key="country.id"
+    >
+      <router-link
+        :to="{ name: 'country-detail', params: { name: country.name } }"
+        class="linkTile"
       >
-      <router-link 
-          :to="{ name: 'country-detail', params: {country: country.name }}" 
-          class="linkTile"
-        >
         <img :src="country.flag" alt="Country Flag" class="flag" />
         <div class="text">
           <h5>{{ country.name }}</h5>
           <p><span>Population: </span>{{ country.population }}</p>
           <p><span>Region: </span> {{ country.region }}</p>
           <p><span>Capital: </span> {{ country.region }}</p>
-        </div></router-link>
-      </div>
+        </div></router-link
+      >
     </div>
   </div>
 </template>
@@ -44,10 +52,15 @@ export default {
   data() {
     return {
       search: "",
+      selectedRegion: "",
+      regions: [],
     };
   },
   created() {
     this.loadCountries();
+  },
+  mounted() {
+    this.getRegions();
   },
 
   computed: {
@@ -55,17 +68,30 @@ export default {
       countries: "getCountries",
     }),
     searchedCountry() {
-      const result = this.countries.filter((country) => {
-        return country.name.toLowerCase().match(this.search.toLowerCase());
-      });
-      console.log("result", result);
-      return result;
+      if (this.search) {
+        return this.countries.filter((country) =>
+          country.name.toLowerCase().match(this.search.toLowerCase())
+        );
+      } else if (this.selectedRegion) {
+        return this.countries.filter(
+          (country) => country.region === this.selectedRegion
+        );
+      } else {
+        return this.countries;
+      }
     },
   },
   methods: {
     ...mapActions({
       loadCountries: "fetchCountry",
     }),
+    getRegions() {
+      const allRegions = this.countries.map((country) => country.region);
+
+      const idealRegions = [...new Set(allRegions)];
+
+      this.regions = idealRegions;
+    },
   },
 };
 </script>
@@ -109,8 +135,6 @@ export default {
   padding-right: 30px;
 }
 
-
-
 .tileGrid {
   display: flex;
   flex-wrap: wrap;
@@ -120,13 +144,13 @@ export default {
   max-width: 1450px;
 }
 
-
 .linkTile {
   display: inline-block;
   width: 300px;
   height: 365px;
   text-decoration: none;
   color: inherit;
+  text-align: left;
 }
 
 .countryTile {
@@ -153,22 +177,32 @@ export default {
   border-radius: 3px 3px 0 0;
 }
 
+.select {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  width: 200px;
+  height: 50px;
+  text-align: center;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  background: var(--background-color-secondary);
+  float: right;
+  margin: -80px 80px;
+}
 
-
-@media (max-width: 875px) {
-  .tileGrid {
-    justify-content: center;
-    padding-left: 50px;
-  }
-  .searchBar {
-    flex-direction: column;
-    padding: 25px 15px;
-  }
-  .searchContainer {
-    width: inherit;
-  }
-  .dropdownDiv {
-    margin-top: 40px;
-  }
+select,
+input {
+  padding: 10px;
+  border: none;
+  width: 250px;
+  outline: none;
+  background: var(--background-color-secondary);
+  color: var(--text-primary-color);
+}
+input::placeholder {
+  color: var(--text-primary-color);
 }
 </style>
