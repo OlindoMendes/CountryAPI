@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import CountryDetails from '../views/CountryDetails.vue'
+import CountryDetailsView from '../views/CountryDetailsView.vue'
 
 const routes = [
   {
@@ -11,7 +11,7 @@ const routes = [
   {
     path: '/country/:name',
     name: 'country-detail',
-    component: CountryDetails,
+    component: CountryDetailsView,
     props:true
   },
 ]
